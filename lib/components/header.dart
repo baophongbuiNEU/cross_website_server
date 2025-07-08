@@ -229,8 +229,9 @@ class HeaderState extends State<Header> {
     ]);
 
     yield header([
-      a(href: '/', [
-        img(
+      Link(
+        to: '/',
+        child: img(
           src: Images.crossLogo,
           styles: Styles(
             width: Unit.pixels(120),
@@ -241,7 +242,7 @@ class HeaderState extends State<Header> {
             color: AppColors.textBlack,
           ),
         ),
-      ]),
+      ),
       if (!menuOpen) content,
       MenuButton(
         onClick: () {
