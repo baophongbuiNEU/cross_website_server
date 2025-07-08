@@ -1,6 +1,7 @@
 import 'package:cross_website/constants/app_colors.dart';
 import 'package:cross_website/language/language_manager.dart';
 import 'package:cross_website/pages/about_new.dart';
+import 'package:cross_website/pages/not_found_page.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
 import 'package:jaspr_router/jaspr_router.dart';
@@ -64,6 +65,16 @@ class AppState extends State<App> {
               path: '/about',
               title: 'About',
               builder: (context, state) => const AboutNew(),
+            ),
+            Route(
+              path: '/:path',
+              builder: (context, state) {
+                final currentPath = state.path;
+                if (currentPath != '/' && currentPath != '/about') {
+                  return const NotFoundPage();
+                }
+                return div([]);
+              },
             ),
           ],
         ),
