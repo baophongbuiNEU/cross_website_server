@@ -1,3 +1,5 @@
+import 'package:cross_website/components/cookie_consent_banner.dart';
+import 'package:cross_website/components/header.dart';
 import 'package:cross_website/constants/app_colors.dart';
 import 'package:cross_website/language/language_manager.dart';
 import 'package:cross_website/pages/about_new.dart';
@@ -26,6 +28,12 @@ class AppState extends State<App> {
   bool _isLoading = true;
   bool _hasError = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadTranslations();
+  }
+
   Future<void> _loadTranslations() async {
     try {
       final success = await LanguageManager.loadTranslations();
@@ -46,46 +54,48 @@ class AppState extends State<App> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _loadTranslations();
-  }
-
-  @override
   Iterable<Component> build(BuildContext context) sync* {
     if (_isLoading) {
       yield LoadingScreen();
     } else if (_hasError) {
-      yield text('Lỗi');
+      yield div(classes: 'main', [text('Error loading translations')]);
+    } else {
+      yield ProviderScope(
+        child: div(classes: 'main', [
+          CookieConsentBanner(),
+          Router(
+            routes: [
+              Route(
+                path: '/',
+                title: 'Home',
+                builder: (context, state) => div(classes: 'main', [
+                  // Header(),
+                  const Home(),
+                ]),
+              ),
+              Route(
+                path: '/about',
+                title: 'About',
+                builder: (context, state) => div(classes: 'main', [
+                  // Header(),
+                  const AboutNew(),
+                ]),
+              ),
+              Route(
+                path: '/:path',
+                builder: (context, state) {
+                  final currentPath = state.path;
+                  if (currentPath != '/' && currentPath != '/about') {
+                    return const NotFoundPage();
+                  }
+                  return div([]);
+                },
+              ),
+            ],
+          ),
+        ]),
+      );
     }
-    yield ProviderScope(
-      child: div(classes: 'main', [
-        Router(
-          routes: [
-            Route(
-              path: '/',
-              title: 'Home',
-              builder: (context, state) => const Home(),
-            ),
-            Route(
-              path: '/about',
-              title: 'About',
-              builder: (context, state) => const AboutNew(),
-            ),
-            Route(
-              path: '/:path',
-              builder: (context, state) {
-                final currentPath = state.path;
-                if (currentPath != '/' && currentPath != '/about') {
-                  return const NotFoundPage();
-                }
-                return div([]);
-              },
-            ),
-          ],
-        ),
-      ]),
-    );
   }
 
   @css
@@ -103,25 +113,6 @@ class AppState extends State<App> {
             justifyContent: JustifyContent.center,
             alignItems: AlignItems.center,
             flex: Flex(grow: 1),
-          ),
-        ]),
-        css('.loading-container', [
-          css('&').styles(
-            display: Display.flex,
-            height: 100.vh,
-            width: 100.vw,
-            justifyContent: JustifyContent.center,
-            alignItems: AlignItems.center,
-            backgroundColor: AppColors.backgroundTheme,
-          ),
-        ]),
-        css('.loading-spinner', [
-          css('&').styles(
-            display: Display.flex,
-            flexDirection: FlexDirection.column,
-            alignItems: AlignItems.center,
-            justifyContent: JustifyContent.center,
-            textAlign: TextAlign.center,
           ),
         ]),
       ];
