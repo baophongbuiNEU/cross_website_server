@@ -125,9 +125,9 @@ class HeaderState extends State<Header> {
         ])
           div(classes: 'nav-item', [
             if (route.path == '/about' || route.path == '/')
-              Link(
-                to: route.path,
-                children: [text(route.label)],
+              a(
+                href: route.path,
+                [(text(route.label))],
               )
             else
               div(
@@ -180,9 +180,6 @@ class HeaderState extends State<Header> {
                 'change': (dynamic event) {
                   final value = event.target.value as String?;
                   if (value != null) {
-                    context
-                        .read(LanguageManager.selectedLanguageProvider.notifier)
-                        .state = value;
                     LanguageManager.saveLanguage(value, context);
                   }
                 },
@@ -229,9 +226,8 @@ class HeaderState extends State<Header> {
     ]);
 
     yield header([
-      Link(
-        to: '/',
-        child: img(
+      a(href: '/', [
+        img(
           src: Images.crossLogo,
           styles: Styles(
             width: Unit.pixels(120),
@@ -242,7 +238,7 @@ class HeaderState extends State<Header> {
             color: AppColors.textBlack,
           ),
         ),
-      ),
+      ]),
       if (!menuOpen) content,
       MenuButton(
         onClick: () {
