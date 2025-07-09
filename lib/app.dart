@@ -1,6 +1,7 @@
 import 'package:cross_website/constants/app_colors.dart';
 import 'package:cross_website/language/language_manager.dart';
 import 'package:cross_website/pages/about_new.dart';
+import 'package:cross_website/pages/loading_screen.dart';
 import 'package:cross_website/pages/not_found_page.dart';
 import 'package:jaspr/jaspr.dart';
 import 'package:jaspr_riverpod/jaspr_riverpod.dart';
@@ -52,6 +53,11 @@ class AppState extends State<App> {
 
   @override
   Iterable<Component> build(BuildContext context) sync* {
+    if (_isLoading) {
+      yield LoadingScreen();
+    } else if (_hasError) {
+      yield text('Lỗi');
+    }
     yield ProviderScope(
       child: div(classes: 'main', [
         Router(
